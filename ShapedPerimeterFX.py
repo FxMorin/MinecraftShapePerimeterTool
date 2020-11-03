@@ -6,12 +6,12 @@ import math
 noAccuracyMode = False #Will only do the first grid. Everything will be axis-aligned
 verbose = True
 
-GroupingAccuracy = 4 #Recommended 1-6, Grouping accuracy is the limit of gray pixels which need to be together. Higher grouping accuracy will result in less shots and lower accuracy
+groupingAccuracy = 4 #Recommended 1-6, Grouping accuracy is the limit of gray pixels which need to be together. Higher grouping accuracy will result in less shots and lower accuracy
 
-Steps = 4 #Recommended 1-5, 1 means it steps every pixel. 5 means its steps 5 pixels at a time. Lower numbers will result in higher accuracy
+steps = 4 #Recommended 1-5, 1 means it steps every pixel. 5 means its steps 5 pixels at a time. Lower numbers will result in higher accuracy
 
 #BrutePower directly corilates to the amount of time it will take for this system to run
-BrutePower = 1 #How many times will the algorithm attempt to run the equation again. Max: 25
+brutePower = 1 #How many times will the algorithm attempt to run the equation again. Max: 25
 
 for fn in glob('./input/*'):
 	name = fn.split('/')[-1].split('.')[0].split('\\')[1]
@@ -26,7 +26,7 @@ for fn in glob('./input/*'):
 	w = 0
 	h = 0
 	notDone = True
-	gray[np.where((gray==0))] = 2 #remove the color black since we will be using it as a placeholder
+	gray[np.where((gray==0))] = 1 #remove the color black since we will be using it as a placeholder
 	if verbose:
 		print("Getting Points")
 	while notDone:
@@ -58,11 +58,11 @@ for fn in glob('./input/*'):
 			notDone = False
 	if verbose:
 		print("Starting Secondary Algorithm")
-	if BrutePower > 25:
-		BrutePower = 25
+	if brutePower > 25:
+		brutePower = 25
 	#Start of the secondary algorithm
 	if not noAccuracyMode:
-		for x in range(BrutePower):
+		for x in range(brutePower):
 			notDone = True
 			w = 0
 			h = 0
@@ -70,7 +70,7 @@ for fn in glob('./input/*'):
 			while notDone: #Do it again but with seconary algorithm
 				if verbose and lastH != math.floor(h/20):
 					lastH = math.floor(h/20)
-					print((((h/height)*100)*(x+1))/BrutePower)
+					print((((h/height)*100)*(x+1))/brutePower)
 				hh = 0
 				ww = 0
 				cg = 0 #Yes, I am using the single most amazing algorithm known to man... Bruteforce
@@ -85,12 +85,12 @@ for fn in glob('./input/*'):
 									ww = w+Woff
 									hh = h+Hoff
 									cg = countGray
-				if cg > GroupingAccuracy*3:                                    #default:14
+				if cg > groupingAccuracy*3:                                    #default:14
 					squares.append((ww,hh))
 					gray[hh:hh+7,ww:ww+7] = 0
 					w += 5                                     #default:5
 				else:
-					w += Steps                                     #default:5
+					w += steps                                     #default:5
 					if w > width:
 						w = 0
 						if h >= height:
